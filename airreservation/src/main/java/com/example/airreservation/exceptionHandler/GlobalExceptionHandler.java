@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.context.request.WebRequest;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 
 @ControllerAdvice
 @ResponseBody
@@ -25,7 +27,6 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
-                "Internal Server Error",
                 "Wystąpił nieoczekiwany błąd.",
                 request.getDescription(false)
         );
@@ -39,7 +40,6 @@ public class GlobalExceptionHandler {
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
-                "Not Found",
                 ex.getMessage(),
                 request.getDescription(false).replace("uri=", "")
         );
@@ -51,14 +51,77 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleArgumentNotValidExceptions(
             MethodArgumentNotValidException ex, WebRequest request
     ) {
+
+        Map<String, String> errors = new HashMap<>();
+        ex.getBindingResult().getFieldErrors().forEach(error -> {
+            errors.put(error.getField(), error.getDefaultMessage());
+        });
+
         ErrorResponse errorResponse = new ErrorResponse(
                 LocalDateTime.now(),
-                HttpStatus.NOT_ACCEPTABLE.value(),
-                "Not Valid",
-                ex.getMessage(),
+                ex.getStatusCode().value(),
+                "Wprowadzono nieprawidłowe dane.",
                 request.getDescription(false).replace("uri=", "")
         );
 
+        errorResponse.setValidationErrors(errors);
+
         return new ResponseEntity<>(errorResponse, HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExistsExceptions(
+            EmailAlreadyExistsException ex, WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getStatusCode().value(),
+                ex.getReason(),
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
+    }
+
+    @ExceptionHandler(AirportNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAirportNotFoundExceptions(
+            AirportNotFoundException ex, WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getStatusCode().value(),
+                ex.getReason(),
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
+    }
+
+    @ExceptionHandler(AirplaneNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleAirplaneNotFoundExceptions(
+            AirplaneNotFoundException ex, WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getStatusCode().value(),
+                ex.getReason(),
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
+    }
+
+    @ExceptionHandler(PassengerNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handlePassengerNotFoundExceptions(
+            PassengerNotFoundException ex, WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getStatusCode().value(),
+                ex.getReason(),
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
     }
 }

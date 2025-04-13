@@ -1,9 +1,6 @@
 package com.example.airreservation.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
@@ -11,14 +8,16 @@ import lombok.Data;
 public class Reservation {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private long reservationNumber;
-    private long flightNumber;
+    private String reservationNumber;
+    private String flightNumber;
     private int seatNumber;
     private String fullName;
     private String email;
     private String phoneNumber;
-    private boolean isDeparted;
+
+    private boolean departed;
 
     @ManyToOne
     @JoinColumn(name = "flight_id")
