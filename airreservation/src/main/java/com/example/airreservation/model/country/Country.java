@@ -1,4 +1,4 @@
-package com.example.airreservation.model;
+package com.example.airreservation.model.country;
 
 import jakarta.persistence.*;
 import lombok.Data;
@@ -13,4 +13,5 @@ public class Country {
 
     @Column(unique = true)
     private String name;
+
 }

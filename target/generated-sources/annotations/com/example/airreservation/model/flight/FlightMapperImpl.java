@@ -1,11 +1,13 @@
-package com.example.airreservation.model;
+package com.example.airreservation.model.flight;
 
+import com.example.airreservation.model.airplane.Airplane;
+import com.example.airreservation.model.airport.Airport;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-13T14:51:50+0200",
+    date = "2025-04-13T22:20:41+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.6 (Amazon.com Inc.)"
 )
 @Component
@@ -22,7 +24,6 @@ public class FlightMapperImpl implements FlightMapper {
         flightDTO.setDepartureAirportId( flightDepartureAirportId( flight ) );
         flightDTO.setArrivalAirportId( flightArrivalAirportId( flight ) );
         flightDTO.setAirplane( flightAirplaneId( flight ) );
-        flightDTO.setFlightDuration( flight.getFlightDuration() );
         flightDTO.setFlightNumber( flight.getFlightNumber() );
         flightDTO.setRoundTrip( flight.isRoundTrip() );
         flightDTO.setDepartureDate( flight.getDepartureDate() );
@@ -38,7 +39,6 @@ public class FlightMapperImpl implements FlightMapper {
 
         Flight flight = new Flight();
 
-        flight.setFlightDuration( flightDTO.getFlightDuration() );
         flight.setFlightNumber( flightDTO.getFlightNumber() );
         flight.setRoundTrip( flightDTO.isRoundTrip() );
         flight.setDepartureDate( flightDTO.getDepartureDate() );

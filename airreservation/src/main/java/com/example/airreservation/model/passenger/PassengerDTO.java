@@ -1,11 +1,8 @@
-package com.example.airreservation.model;
+package com.example.airreservation.model.passenger;
 
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
-import java.util.List;
 
 @Data
 public class PassengerDTO {

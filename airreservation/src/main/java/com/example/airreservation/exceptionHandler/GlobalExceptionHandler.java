@@ -124,4 +124,60 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(errorResponse, ex.getStatusCode());
     }
+
+    @ExceptionHandler(IncorrectSeatException.class)
+    public ResponseEntity<ErrorResponse> handleIncorrectSeatExceptions(
+            IncorrectSeatException ex, WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getStatusCode().value(),
+                ex.getReason(),
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
+    }
+
+    @ExceptionHandler(SeatAlreadyOccupiedException.class)
+    public ResponseEntity<ErrorResponse> handleSeatAlreadyOccupiedExceptions(
+            SeatAlreadyOccupiedException ex, WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getStatusCode().value(),
+                ex.getReason(),
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
+    }
+
+    @ExceptionHandler(PhoneNumberAlreadyExistsException.class)
+    public ResponseEntity<ErrorResponse> handlePhoneNumberAlreadyExistsExceptions(
+            PhoneNumberAlreadyExistsException ex, WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getStatusCode().value(),
+                ex.getReason(),
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
+    }
+
+    @ExceptionHandler(InvalidFlightException.class)
+    public ResponseEntity<ErrorResponse> handlePhoneNumberAlreadyExistsExceptions(
+            InvalidFlightException ex, WebRequest request
+    ) {
+        ErrorResponse errorResponse = new ErrorResponse(
+                LocalDateTime.now(),
+                ex.getStatusCode().value(),
+                ex.getReason(),
+                request.getDescription(false).replace("uri=", "")
+        );
+
+        return new ResponseEntity<>(errorResponse, ex.getStatusCode());
+    }
 }

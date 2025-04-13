@@ -1,10 +1,11 @@
-package com.example.airreservation.model;
+package com.example.airreservation.model.reservation;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
-public interface ReservationMapper {
+public interface
+ReservationMapper {
 
     @Mapping(target = "reservationNumber", ignore = true)
     @Mapping(target = "fullName", ignore = true)

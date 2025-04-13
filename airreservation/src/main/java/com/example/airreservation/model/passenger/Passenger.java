@@ -1,7 +1,9 @@
-package com.example.airreservation.model;
+package com.example.airreservation.model.passenger;
 
+import com.example.airreservation.model.reservation.Reservation;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +21,9 @@ public class Passenger {
     private String phoneNumber;
     private String email;
     private String password;
+    private String matchingPassword;
 
-    @OneToMany(mappedBy = "passenger")
+    @ToString.Exclude
+    @OneToMany(mappedBy = "passenger", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Reservation> reservations = new ArrayList<>();
 }

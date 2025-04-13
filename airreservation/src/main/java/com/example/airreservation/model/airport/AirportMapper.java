@@ -1,4 +1,4 @@
-package com.example.airreservation.model;
+package com.example.airreservation.model.airport;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

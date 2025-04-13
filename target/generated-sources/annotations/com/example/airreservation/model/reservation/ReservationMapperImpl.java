@@ -1,11 +1,13 @@
-package com.example.airreservation.model;
+package com.example.airreservation.model.reservation;
 
+import com.example.airreservation.model.flight.Flight;
+import com.example.airreservation.model.passenger.Passenger;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-13T14:51:50+0200",
+    date = "2025-04-13T22:20:41+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.6 (Amazon.com Inc.)"
 )
 @Component
@@ -32,14 +34,8 @@ public class ReservationMapperImpl implements ReservationMapper {
 
         ReservationDTO reservationDTO = new ReservationDTO();
 
-        Long id = reservationPassengerId( reservation );
-        if ( id != null ) {
-            reservationDTO.setPassengerId( id );
-        }
-        Long id1 = reservationFlightId( reservation );
-        if ( id1 != null ) {
-            reservationDTO.setFlightId( id1 );
-        }
+        reservationDTO.setPassengerId( reservationPassengerId( reservation ) );
+        reservationDTO.setFlightId( reservationFlightId( reservation ) );
         reservationDTO.setReservationNumber( reservation.getReservationNumber() );
         reservationDTO.setFlightNumber( reservation.getFlightNumber() );
         reservationDTO.setSeatNumber( reservation.getSeatNumber() );

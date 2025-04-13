@@ -1,6 +1,6 @@
 package com.example.airreservation.repository;
 
-import com.example.airreservation.model.Airplane;
+import com.example.airreservation.model.airplane.Airplane;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

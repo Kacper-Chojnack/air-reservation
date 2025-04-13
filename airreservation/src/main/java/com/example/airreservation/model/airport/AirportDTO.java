@@ -1,4 +1,4 @@
-package com.example.airreservation.model;
+package com.example.airreservation.model.airport;
 
 import lombok.Data;
 

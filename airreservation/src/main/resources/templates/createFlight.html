@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Utwórz nowy lot</title>
+    <style>
+        .error { color: red; font-size: 0.9em; }
+        .error-border { border: 1px solid red; }
+    </style>
+</head>
+<body>
+<div style="padding: 10px;">
+    <a th:href="@{/}" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+        <img th:src="@{/images/logo.png}" alt="Logo" style="height: 40px;">
+        <span style="font-size: 24px; font-weight: bold; color: black;">AirReservation</span>
+    </a>
+</div>
+<h1>Utwórz nowy lot</h1>
+
+<form th:action="@{/createFlight}" th:object="${flightDTO}" method="post">
+    <div th:if="${#fields.hasGlobalErrors()}">
+        <p th:each="err : ${#fields.globalErrors()}"
+           th:text="${err}"
+           class="error"></p>
+    </div>
+    <label>Lotnisko wylotu:</label>
+    <select th:field="*{departureAirportId}"
+            th:classappend="${#fields.hasErrors('departureAirportId')} ? 'error-border'">
+        <option value="">Wybierz lotnisko</option>
+        <option th:each="airport : ${airports}"
+                th:value="${airport.id}"
+                th:text="${airport.name}"
+                th:selected="${airport.id == flightDTO.departureAirportId}"></option>
+    </select>
+    <div th:if="${#fields.hasErrors('departureAirportId')}"
+         th:errors="*{departureAirportId}"
+         class="error"></div>
+    </div>
+
+    <div>
+        <label>Lotnisko przylotu:</label>
+        <select th:field="*{arrivalAirportId}"
+                th:classappend="${#fields.hasErrors('arrivalAirportId')} ? 'error-border'">
+            <option value="">Wybierz lotnisko</option>
+            <option th:each="airport : ${airports}"
+                    th:value="${airport.id}"
+                    th:text="${airport.name}"
+                    th:selected="${airport.id == flightDTO.arrivalAirportId}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('arrivalAirportId')}"
+             th:errors="*{arrivalAirportId}"
+             class="error"></div>
+    </div>
+
+    <div>
+        <label>Samolot:</label>
+        <select th:field="*{airplane}"
+                th:classappend="${#fields.hasErrors('airplane')} ? 'error-border'">
+            <option value="">Wybierz samolot</option>
+            <option th:each="airplane : ${airplanes}"
+                    th:value="${airplane.id}"
+                    th:text="${airplane.name}"
+                    th:selected="${airplane.id == flightDTO.airplane}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('airplane')}"
+             th:errors="*{airplane}"
+             class="error"></div>
+    </div>
+
+    <div>
+        <label>Data wylotu:</label>
+        <input type="datetime-local"
+               th:field="*{departureDate}"
+               th:classappend="${#fields.hasErrors('departureDate')} ? 'error-border'">
+        <div th:if="${#fields.hasErrors('departureDate')}"
+             th:errors="*{departureDate}"
+             class="error"></div>
+    </div>
+
+    <div>
+        <label>Numer lotu:</label>
+        <input type="text"
+               th:field="*{flightNumber}"
+               th:classappend="${#fields.hasErrors('flightNumber')} ? 'error-border'">
+        <div th:if="${#fields.hasErrors('flightNumber')}"
+             th:errors="*{flightNumber}"
+             class="error"></div>
+    </div>
+
+    <div>
+        <label>Czas trwania:</label>
+        <input type="number"
+               th:field="*{flightDurationHours}"
+               min="0"
+               th:classappend="${#fields.hasErrors('flightDurationHours')} ? 'error-border'">
+        <span>godzin</span>
+
+        <input type="number"
+               th:field="*{flightDurationMinutes}"
+               min="0"
+               max="59"
+               th:classappend="${#fields.hasErrors('flightDurationMinutes')} ? 'error-border'">
+        <span>minut</span>
+
+        <div th:if="${#fields.hasErrors('flightDurationHours')}"
+             th:errors="*{flightDurationHours}"
+             class="error"></div>
+        <div th:if="${#fields.hasErrors('flightDurationMinutes')}"
+             th:errors="*{flightDurationMinutes}"
+             class="error"></div>
+    </div>
+
+    <div>
+        <label>
+            <input type="checkbox" th:field="*{roundTrip}">
+            Lot w dwie strony
+        </label>
+    </div>
+
+    <button type="submit">Utwórz lot</button>
+</form>
+
+</body>
+</html>

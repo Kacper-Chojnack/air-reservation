@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Create Reservation</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+<div style="padding: 10px;">
+    <a th:href="@{/}" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+        <img th:src="@{/images/logo.png}" alt="Logo" style="height: 40px;">
+        <span style="font-size: 24px; font-weight: bold; color: black;">AirReservation</span>
+    </a>
+</div>
+<h1>Zarezerwuj lot</h1>
+<form th:action="@{/createReservation}" th:object="${reservationDTO}" method="post">
+    <div th:if="${error}" style="color: red;">
+        <span th:text="${error}"></span>
+    </div>
+
+    <div>
+        <label>Pasażer:</label>
+        <select th:field="*{passengerId}" required>
+            <option th:each="passenger : ${passengers}"
+                    th:value="${passenger.id}"
+                    th:text="${passenger.name} + ' ' + ${passenger.surname}"></option>
+        </select>
+    </div>
+
+    <div>
+    <label>Numer lotu:</label>
+    <input type="text" th:field="*{flightNumber}" readonly />
+</div>
+<input type="hidden" th:field="*{flightId}" />
+
+    <div>
+        <label>Miejsce:</label>
+        <select th:field="*{seatNumber}" id="seatSelect" disabled required>
+            <option value="">Najpierw wybierz lot</option>
+        </select>
+    </div>
+
+    <button type="submit">Zarezerwuj lot</button>
+</form>
+
+<script>
+    function loadSeats() {
+        const flightId = $("#flightSelect").val();
+        if (flightId) {
+            $.ajax({
+                url: '/getAvailableSeats?flightId=' + flightId,
+                type: 'GET',
+                success: function(seats) {
+                    $("#seatSelect").empty().prop('disabled', false);
+                    $("#seatSelect").append($('<option>').val('').text('Wybierz miejsce'));
+                    seats.forEach(seat => {
+                        $("#seatSelect").append($('<option>').val(seat).text(seat));
+                    });
+                }
+            });
+        } else {
+            $("#seatSelect").empty().prop('disabled', true);
+            $("#seatSelect").append($('<option>').val('').text('Najpierw wybierz lot'));
+        }
+    }
+</script>
+</body>
+</html>
