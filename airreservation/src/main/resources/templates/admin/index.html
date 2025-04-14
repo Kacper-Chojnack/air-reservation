@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admina</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{shared/fragments :: header}"></div>
+<div class="container">
+<h1>Panel Administracyjny</h1>
+<ul>
+    <li><a th:href="@{/admin/flights}">Zarządzaj Lotami</a></li>
+    <li><a th:href="@{/admin/passengers}">Zarządzaj Pasażerami</a></li>
+    <li><a th:href="@{/admin/reservations}">Zarządzaj Rezerwacjami</a></li>
+</ul>
+</div>
+</body>>
+</html>

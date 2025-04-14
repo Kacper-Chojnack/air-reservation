@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Zarządzanie Lotami</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+    <style>.pagination{...}.pagination a,...</style>
+</head>
+<body>
+<div th:replace="~{shared/fragments :: header}"></div>
+<div class="container">
+
+<h1>Zarządzanie Lotami</h1>
+<p><a th:href="@{/flights/create}" class="button">Dodaj Nowy Lot</a></p>
+
+<div th:if="${successMessage}" class="flash-success" th:text="${successMessage}"></div>
+<div th:if="${errorMessage}" class="flash-error" th:text="${errorMessage}"></div>
+
+<div th:if="${flightPage == null or !flightPage.hasContent()}">
+    <p>Brak lotów do wyświetlenia.</p>
+</div>
+
+<div th:if="${flightPage != null and flightPage.hasContent()}">
+    <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse;">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nr Lotu</th>
+            <th>Skąd</th>
+            <th>Dokąd</th>
+            <th>Data Wylotu</th>
+            <th>Samolot</th>
+            <th>Akcje</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="flight : ${flightPage.content}">
+            <td th:text="${flight.id}"></td>
+            <td th:text="${flight.flightNumber}"></td>
+            <td th:text="${flight.departureAirport?.name}"></td>
+            <td th:text="${flight.arrivalAirport?.name}"></td>
+            <td th:text="${#temporals.format(flight.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
+            <td th:text="${flight.airplane?.name}"></td>
+            <td>
+                <a th:href="@{/admin/flights/edit/{id}(id=${flight.id})}" class="button-small">Edytuj</a>
+                <form th:action="@{/admin/flights/delete/{id}(id=${flight.id})}" method="post" style="display: inline;"
+                      onsubmit="return confirm('Czy na pewno chcesz usunąć ten lot?');">
+                    <input type="hidden" name="_method" value="delete"/>
+                    <button type="submit" class="button-small button-danger">Usuń</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+    <div class="pagination" th:if="${flightPage.totalPages > 1}">
+        <a th:if="${flightPage.hasPrevious()}"
+           th:href="@{/admin/flights(page=${flightPage.number - 1}, size=${flightPage.size})}">...</a>
+    </div>
+</div>
+</div>
+</body>
+</html>

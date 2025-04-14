@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8"><title>Edytuj Lot</title>
+<link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{shared/fragments :: header}"></div>
+<div class="container">
+
+<h1>Edytuj Lot</h1>
+<p><a th:href="@{/admin/flights}">« Powrót do listy lotów</a></p>
+
+<div th:if="${errorMessage}" class="flash-error" th:text="${errorMessage}"></div>
+
+<form th:action="@{/admin/flights/update}" th:object="${flightDTO}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+
+    <div th:if="${#fields.hasGlobalErrors()}">
+        <p th:each="err : ${#fields.globalErrors()}" th:text="${err}" class="error"></p>
+    </div>
+
+    <div>
+        <label for="departureAirport">Lotnisko wylotu:</label>
+        <select id="departureAirport" th:field="*{departureAirportId}"
+                th:classappend="${#fields.hasErrors('departureAirportId')} ? 'error-border'">
+            <option value="">Wybierz lotnisko</option>
+            <option th:each="airport : ${airports}" th:value="${airport.id}" th:text="${airport.name}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('departureAirportId')}" th:errors="*{departureAirportId}" class="error"></div>
+    </div>
+    <div>
+        <label for="arrivalAirport">Lotnisko przylotu:</label>
+        <select id="arrivalAirport" th:field="*{arrivalAirportId}"
+                th:classappend="${#fields.hasErrors('arrivalAirportId')} ? 'error-border'">
+            <option value="">Wybierz lotnisko</option>
+            <option th:each="airport : ${airports}" th:value="${airport.id}" th:text="${airport.name}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('arrivalAirportId')}" th:errors="*{arrivalAirportId}" class="error"></div>
+    </div>
+    <div>
+        <label for="airplaneSelect">Samolot:</label>
+        <select id="airplaneSelect" th:field="*{airplane}"
+                th:classappend="${#fields.hasErrors('airplane')} ? 'error-border'">
+            <option value="">Wybierz samolot</option>
+            <option th:each="airplane : ${airplanes}" th:value="${airplane.id}" th:text="${airplane.name}"></option>
+        </select>
+        <div th:if="${#fields.hasErrors('airplane')}" th:errors="*{airplane}" class="error"></div>
+    </div>
+    <div>
+        <label for="flightNumber">Numer lotu:</label>
+        <input id="flightNumber" type="text" th:field="*{flightNumber}"
+               th:classappend="${#fields.hasErrors('flightNumber')} ? 'error-border'">
+        <div th:if="${#fields.hasErrors('flightNumber')}" th:errors="*{flightNumber}" class="error"></div>
+    </div>
+    <div>
+        <label for="departureDate">Data wylotu:</label>
+        <input id="departureDate" type="datetime-local" th:field="*{departureDate}"
+               th:classappend="${#fields.hasErrors('departureDate')} ? 'error-border'">
+        <div th:if="${#fields.hasErrors('departureDate')}" th:errors="*{departureDate}" class="error"></div>
+    </div>
+    <div>
+        <label>Czas trwania:</label>
+        <input id="flightDurationHours" type="number" th:field="*{flightDurationHours}" min="0"
+               th:classappend="${#fields.hasErrors('flightDurationHours')} ? 'error-border'"> godz.
+        <input id="flightDurationMinutes" type="number" th:field="*{flightDurationMinutes}" min="0" max="59"
+               th:classappend="${#fields.hasErrors('flightDurationMinutes')} ? 'error-border'"> min.
+        <div th:if="${#fields.hasErrors('flightDurationHours')}" th:errors="*{flightDurationHours}" class="error"></div>
+        <div th:if="${#fields.hasErrors('flightDurationMinutes')}" th:errors="*{flightDurationMinutes}"
+             class="error"></div>
+    </div>
+    <div>
+        <label for="roundTripCheck">
+            <input id="roundTripCheck" type="checkbox" th:field="*{roundTrip}"> Lot w dwie strony
+        </label>
+    </div>
+
+    <button type="submit">Zapisz zmiany</button>
+</form>
+</div>
+</body>
+</html>

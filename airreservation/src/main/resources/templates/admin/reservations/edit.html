@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Edytuj Rezerwację</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{shared/fragments :: header}"></div>
+<div class="container">
+<h1>Edytuj Rezerwację</h1>
+<p><a th:href="@{/admin/reservations}">« Powrót do listy rezerwacji</a></p>
+
+<div th:if="${errorMessage}" class="flash-error" th:text="${errorMessage}"></div>
+
+<form th:action="@{/admin/reservations/update}" th:object="${reservationAdminEditDTO}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+
+    <div th:if="${#fields.hasErrors('*')}" class="error"> Popraw błędy w formularzu.</div>
+
+    <p><strong>Pasażer:</strong> <span th:text="*{passengerFullName}"></span></p>
+    <p><strong>Lot:</strong> <span th:text="*{flightInfo}"></span></p>
+    <hr>
+    <div>
+        <label for="seatSelect">Nowe Miejsce:</label>
+        <select id="seatSelect" th:field="*{seatNumber}" required
+                th:classappend="${#fields.hasErrors('seatNumber')} ? 'error-border'">
+            <option value="">-- Wybierz nowe miejsce --</option>
+            <option th:each="seat : ${availableSeats}" th:value="${seat}" th:text="${seat}"></option>
+        </select>
+        <span th:if="${#fields.hasErrors('seatNumber')}" th:errors="*{seatNumber}" class="error"></span>
+    </div>
+
+    <p>
+        <button type="submit">Zapisz zmianę miejsca</button>
+    </p>
+</form>
+</div>
+</body>
+</html>

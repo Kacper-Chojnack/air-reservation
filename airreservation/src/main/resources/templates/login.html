@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Logowanie</title>
@@ -7,32 +7,47 @@
 </head>
 <body>
 <div th:replace="~{shared/fragments :: header}"></div>
+<div class="container">
 
-<h1>Logowanie</h1>
+    <h1>Logowanie</h1>
 
-<div th:if="${param.error}" class="flash-error">
-    Nieprawidłowy email lub hasło.
+    <div th:if="${registrationSuccessMessage}" class="flash-info">
+        <p th:text="${registrationSuccessMessage}"></p>
+    </div>
+
+    <div th:if="${confirmationSuccess}" class="flash-success">
+        <p th:text="${confirmationSuccess}"></p>
+    </div>
+
+    <div th:if="${confirmationError}" class="flash-error">
+        <p th:text="${confirmationError}"></p>
+    </div>
+
+    <div th:if="${param.error}" class="flash-error">
+        Nieprawidłowy email lub hasło.
+    </div>
+
+    <div th:if="${param.logout}" class="flash-success">
+        Zostałeś pomyślnie wylogowany.
+    </div>
+
+    <form th:action="@{/login}" method="post">
+        <div class="form-group">
+            <label for="username">Email:</label>
+            <input type="text" id="username" name="username" required autofocus/>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Hasło:</label>
+            <input type="password" id="password" name="password" required/>
+        </div>
+
+        <div class="form-group">
+            <button type="submit" class="button">Zaloguj</button>
+        </div>
+    </form>
+
+    <p>Nie masz konta? <a th:href="@{/passengers/create}">Zarejestruj się</a></p>
 </div>
-
-<div th:if="${param.logout}" class="flash-success">
-    Zostałeś pomyślnie wylogowany.
-</div>
-
-<form th:action="@{/login}" method="post">
-    <div>
-        <label for="username">Email:</label>
-        <input type="text" id="username" name="username" required autofocus/>
-    </div>
-    <div>
-        <label for="password">Hasło:</label>
-        <input type="password" id="password" name="password" required/>
-    </div>
-    <div>
-        <button type="submit">Zaloguj</button>
-    </div>
-</form>
-
-<p>Nie masz konta? <a th:href="@{/passengers/create}">Zarejestruj się</a></p>
-
 </body>
 </html>
