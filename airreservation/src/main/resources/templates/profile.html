@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Mój Profil</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{shared/fragments :: header}"></div>
+
+<h1>Mój Profil</h1>
+
+<div th:if="${passenger}">
+    <h2>Twoje dane:</h2>
+    <p><strong>Imię:</strong> <span th:text="${passenger.name}"></span></p>
+    <p><strong>Nazwisko:</strong> <span th:text="${passenger.surname}"></span></p>
+    <p><strong>Email:</strong> <span th:text="${passenger.email}"></span></p>
+    <p><strong>Numer telefonu:</strong> <span th:text="${passenger.phoneNumber}"></span></p>
+</div>
+
+<h2>Przyszłe rezerwacje:</h2>
+<div th:if="${#lists.isEmpty(futureReservations)}">
+    <p>Brak nadchodzących rezerwacji.</p>
+</div>
+<table th:unless="${#lists.isEmpty(futureReservations)}" border="1" style="width:100%; border-collapse: collapse;">
+    <thead>
+    <tr>
+        <th>Nr Rezerwacji</th>
+        <th>Nr Lotu</th>
+        <th>Z</th>
+        <th>Do</th>
+        <th>Data Wylotu</th>
+        <th>Miejsce</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="res : ${futureReservations}">
+        <td th:text="${res.reservationNumber}"></td>
+        <td th:text="${res.flightNumber}"></td>
+        <td th:text="${res.flight?.departureAirport?.name}"></td>
+        <td th:text="${res.flight?.arrivalAirport?.name}"></td>
+        <td th:text="${#temporals.format(res.flight?.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${res.seatNumber}"></td>
+    </tr>
+    </tbody>
+</table>
+
+<h2>Historia rezerwacji:</h2>
+<div th:if="${#lists.isEmpty(pastReservations)}">
+    <p>Brak historycznych rezerwacji.</p>
+</div>
+<table th:unless="${#lists.isEmpty(pastReservations)}" border="1" style="width:100%; border-collapse: collapse;">
+    <thead>
+    <tr>
+        <th>Nr Rezerwacji</th>
+        <th>Nr Lotu</th>
+        <th>Z</th>
+        <th>Do</th>
+        <th>Data Wylotu</th>
+        <th>Miejsce</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="res : ${pastReservations}">
+        <td th:text="${res.reservationNumber}"></td>
+        <td th:text="${res.flightNumber}"></td>
+        <td th:text="${res.flight?.departureAirport?.name}"></td>
+        <td th:text="${res.flight?.arrivalAirport?.name}"></td>
+        <td th:text="${#temporals.format(res.flight?.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
+        <td th:text="${res.seatNumber}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

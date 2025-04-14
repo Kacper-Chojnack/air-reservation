@@ -1,0 +1,19 @@
+.error {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 2px;
+    display: block;
+}
+
+.error-border {
+    border: 1px solid red !important;
+}
+
+.flash-error {
+    color: red;
+    font-weight: bold;
+    border: 1px solid red;
+    padding: 10px;
+    margin-bottom: 15px;
+    background-color: #ffecec;
+}

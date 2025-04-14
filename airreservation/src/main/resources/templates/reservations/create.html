@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Utwórz Rezerwację</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="~{shared/fragments :: header}"></div>
+
+<h1>Zarezerwuj lot</h1>
+
+<div th:if="${error}" class="flash-error">
+    <span th:text="${error}"></span>
+</div>
+
+<form th:action="@{/reservations/createReservation}" th:object="${reservationDTO}" method="post">
+
+    <div th:if="${#fields.hasErrors('*')}" class="error" style="margin-bottom: 10px;">
+        Proszę poprawić błędy w formularzu.
+    </div>
+
+    <h2>Wybrany lot:</h2>
+    <p><strong>Lot z:</strong> <span th:text="${departureAirport}"></span></p>
+    <p><strong>Lot do:</strong> <span th:text="${arrivalAirport}"></span></p>
+    <p><strong>Data wylotu:</strong> <span th:text="${#temporals.format(departureDate, 'yyyy-MM-dd HH:mm')}"></span></p>
+    <p><strong>Długość lotu:</strong>
+        <span th:text="${flightDuration != null ? flightDuration.toHours() + 'h ' + (flightDuration.toMinutes() % 60) + 'min' : 'Brak danych'}"></span>
+    </p>
+    <p><strong>Numer lotu:</strong> <span th:text="${flightNumber}"></span></p>
+
+    <input type="hidden" th:field="*{flightId}" />
+
+    <div>
+        <label for="seatSelect">Miejsce:</label>
+        <select id="seatSelect" th:field="*{seatNumber}" required th:classappend="${#fields.hasErrors('seatNumber')} ? 'error-border'">
+            <option value="">-- Wybierz miejsce --</option>
+            <option th:each="seat : ${availableSeats}" th:value="${seat}" th:text="${seat}"></option>
+        </select>
+        <span th:if="${#fields.hasErrors('seatNumber')}" th:errors="*{seatNumber}" class="error"></span>
+    </div>
+
+    <button type="submit" style="margin-top: 15px;">Zarezerwuj lot</button>
+</form>
+</body>
+</html>

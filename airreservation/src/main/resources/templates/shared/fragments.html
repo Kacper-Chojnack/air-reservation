@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<div th:fragment="header">
+    <div style="padding: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee;">
+        <a th:href="@{/}" style="text-decoration: none; display: flex; align-items: center; gap: 10px;">
+            <img th:src="@{/images/logo.png}" alt="Logo" style="height: 40px;">
+            <span style="font-size: 24px; font-weight: bold; color: black;">AirReservation</span>
+        </a>
+        <div>
+                <a th:href="@{/login}" class="button">Logowanie</a>
+                <a th:href="@{/passengers/create}" class="button">Rejestracja</a>
+            </span>
+
+            <span sec:authorize="isAuthenticated()">
+                 Witaj, <span sec:authentication="name" style="font-weight: bold;"></span>!
+                <a th:href="@{/profile}" class="button">Mój Profil</a>
+                <!-- Formularz wylogowania -->
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="button-link">Wyloguj</button>
+                </form>
+            </span>
+        </div>
+    </div>
+    <style>
+        .button-link { background: none; border: none; padding: 0; color: blue; text-decoration: underline; cursor: pointer; }
+    </style>
+</div>
+</body>
+</html>

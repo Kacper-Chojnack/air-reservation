@@ -4,16 +4,17 @@ import com.example.airreservation.model.reservation.Reservation;
 import com.example.airreservation.model.airplane.Airplane;
 import com.example.airreservation.model.airport.Airport;
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"reservations", "airplane"})
+@EqualsAndHashCode(exclude = {"reservations", "airplane", "departureAirport", "arrivalAirport"})
 public class Flight {
 
     @Id
@@ -23,16 +24,15 @@ public class Flight {
     @ManyToOne
     @JoinColumn(name = "departure_airport_id", referencedColumnName = "id")
     private Airport departureAirport;
+
     @ManyToOne
     @JoinColumn(name = "arrival_airport_id", referencedColumnName = "id")
     private Airport arrivalAirport;
+
     private Duration flightDuration;
     private String flightNumber;
-    private boolean isRoundTrip;
+    private boolean roundTrip;
 
-    private boolean completed;
-
-    @ToString.Exclude
     @OneToMany(mappedBy = "flight")
     private List<Reservation> reservations;
 
@@ -43,15 +43,16 @@ public class Flight {
     private LocalDateTime departureDate;
 
     public boolean isDeparted() {
-        return LocalDateTime.now().isAfter(departureDate);
+        return departureDate != null && LocalDateTime.now().isAfter(departureDate);
     }
 
     public boolean isCompleted() {
+        if (departureDate == null || flightDuration == null) {
+            return false;
+        }
         return LocalDateTime.now().isAfter(departureDate.plus(flightDuration));
     }
 
-    @Getter
-    @Transient
-    private String formattedDuration;
+    private boolean completed = false;
 
 }

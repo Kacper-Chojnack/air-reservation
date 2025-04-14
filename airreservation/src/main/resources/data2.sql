@@ -44,3 +44,4 @@ INSERT INTO airplane (name, total_seats) VALUES ('Airbus A320', 180);
 INSERT INTO airplane (name, total_seats) VALUES ('Boeing 777', 396);
 INSERT INTO airplane (name, total_seats) VALUES ('Airbus A380', 853);
 INSERT INTO airplane (name, total_seats) VALUES ('Boeing 787 Dreamliner', 335);
+

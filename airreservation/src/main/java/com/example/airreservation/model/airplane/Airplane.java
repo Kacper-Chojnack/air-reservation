@@ -19,6 +19,6 @@ public class Airplane {
 
     @ToString.Exclude
     @OneToMany(mappedBy = "airplane")
-    private List<Flight> flights; // Exclude to prevent circular reference
+    private List<Flight> flights;
 
 }

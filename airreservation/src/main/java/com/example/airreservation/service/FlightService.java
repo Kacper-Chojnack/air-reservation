@@ -1,14 +1,12 @@
 package com.example.airreservation.service;
 
-import com.example.airreservation.exceptionHandler.AirplaneNotFoundException;
-import com.example.airreservation.exceptionHandler.AirportNotFoundException;
-import com.example.airreservation.exceptionHandler.FlightNotFoundException;
-import com.example.airreservation.exceptionHandler.InvalidFlightException;
+import com.example.airreservation.exceptionHandler.ErrorType;
 import com.example.airreservation.model.airplane.Airplane;
 import com.example.airreservation.model.airport.Airport;
 import com.example.airreservation.model.flight.Flight;
 import com.example.airreservation.model.flight.FlightDTO;
 import com.example.airreservation.model.flight.FlightMapper;
+import com.example.airreservation.model.reservation.Reservation;
 import com.example.airreservation.repository.AirplaneRepository;
 import com.example.airreservation.repository.AirportRepository;
 import com.example.airreservation.repository.FlightRepository;
@@ -42,17 +40,17 @@ public class FlightService {
         Flight flight = flightMapper.flightDTOToFlight(flightDTO);
 
         Airport departureAirport = airportRepository.findById(flightDTO.getDepartureAirportId())
-                .orElseThrow(() -> new AirportNotFoundException());
+                .orElseThrow(ErrorType.AIRPORT_NOT_FOUND::create);
 
         Airport arrivalAirport = airportRepository.findById(flightDTO.getArrivalAirportId())
-                .orElseThrow(() -> new AirportNotFoundException());
-
-        Airplane airplane = airplaneRepository.findById(flightDTO.getAirplane())
-                .orElseThrow(() -> new AirplaneNotFoundException());
+                .orElseThrow(ErrorType.AIRPORT_NOT_FOUND::create);
 
         if (flightDTO.getDepartureAirportId().equals(flightDTO.getArrivalAirportId())) {
-            throw new InvalidFlightException();
+            throw ErrorType.AIRPORT_SAME_ERROR.create();
         }
+
+        Airplane airplane = airplaneRepository.findById(flightDTO.getAirplane())
+                .orElseThrow(ErrorType.AIRPLANE_NOT_FOUND::create);
 
         flight.setDepartureAirport(departureAirport);
         flight.setArrivalAirport(arrivalAirport);
@@ -68,23 +66,34 @@ public class FlightService {
 
     public List<Integer> getAvailableSeats(Long flightId) {
         Flight flight = flightRepository.findById(flightId)
-                .orElseThrow(() -> new FlightNotFoundException());
+                .orElseThrow(ErrorType.FLIGHT_NOT_FOUND::create);
 
-        // Pobierz zajęte miejsca z aktywnych rezerwacji
-        List<Integer> reservedSeats = reservationRepository.findActiveSeatsByFlightId(flightId);
+        List<Integer> reservedSeats = reservationRepository.findByFlightId(flightId)
+                .stream()
+                .map(Reservation::getSeatNumber)
+                .toList();
 
-        // Wygeneruj listę wszystkich miejsc w samolocie
         List<Integer> allSeats = IntStream.rangeClosed(1, flight.getAirplane().getTotalSeats())
                 .boxed()
                 .toList();
 
-        // Filtruj wolne miejsca
         return allSeats.stream()
                 .filter(seat -> !reservedSeats.contains(seat))
                 .toList();
     }
 
-    public List<Flight> getAvailableFlights(LocalDateTime localDateTime){
-        return flightRepository.findVisibleFlights(localDateTime);
+    public List<Flight> getAvailableFlights(LocalDateTime currentTime) {
+        return flightRepository.findAll().stream()
+                .filter(flight ->
+                        !flight.isCompleted() &&
+                                flight.getDepartureDate().isAfter(currentTime)
+                )
+                .toList();
     }
+
+    public Flight getFlightById(Long flightId) {
+        return flightRepository.findById(flightId)
+                .orElseThrow(() -> new RuntimeException("Flight not found"));
+    }
+
 }

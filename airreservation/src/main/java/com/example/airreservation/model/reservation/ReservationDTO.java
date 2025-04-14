@@ -3,27 +3,26 @@ package com.example.airreservation.model.reservation;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import jakarta.validation.constraints.Min;
+
 @Data
 public class ReservationDTO {
 
-    //@NotNull(message = "Numer rezerwacji nie może być pusty.")
     private String reservationNumber;
-   // @NotNull(message = "Numer lotu nie może być pusty.")
     private String flightNumber;
-    @NotNull(message = "Miejsce nie może być puste.")
-    private Integer seatNumber;
-    //@NotBlank(message = "Imię i nazwisko nie mogą być puste.")
     private String fullName;
-   // @NotBlank(message = "Email nie może być pusty.")
     private String email;
-    //@NotBlank(message = "Numer telefonu nie może być pusty.")
     private String phoneNumber;
-    //@NotNull(message = "Informacja czy lot się odbył nie może być pusta.")
     private boolean departed;
-    @NotNull(message = "Lot nie może być pusty.")
-    private Long flightId;
-    @NotNull(message = "Pasażer nie może być pusty.")
-    private Long passengerId;
 
+    @NotNull(message = "Miejsce nie może być puste.")
+    @Min(value = 1, message = "Numer miejsca musi być dodatni.")
+    private Integer seatNumber;
+
+    @NotNull(message = "Identyfikator lotu nie może być pusty.")
+    private Long flightId;
+
+    @NotNull(message = "Identyfikator pasażera nie może być pusty.")
+    private Long passengerId;
 
 }
