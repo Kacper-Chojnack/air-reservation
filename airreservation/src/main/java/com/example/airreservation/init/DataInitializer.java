@@ -144,6 +144,25 @@ public class DataInitializer implements CommandLineRunner {
             logger.info("Użytkownik admin ({}) już istnieje.", adminEmail);
         }
 
+        String passengerEmail = "pasazer@mail.pl";
+        if (passengerRepository.findByEmail(passengerEmail).isEmpty()) {
+            logger.info("Brak użytkownika testowego. Tworzenie...");
+            Passenger passenger = new Passenger();
+            passenger.setName("Użytkownik");
+            passenger.setSurname("Testowy");
+            passenger.setEmail(adminEmail);
+            passenger.setPassword(passwordEncoder.encode("pasazer"));
+            passenger.setPhoneNumber("123456789");
+            passenger.setRole("ROLE_USER");
+            passenger.setEnabled(true);
+            passenger.setConfirmationToken(null);
+            passenger.setTokenExpiryDate(null);
+            passengerRepository.save(passenger);
+            logger.info("Utworzono użytkownika testowego: {}", passengerEmail);
+        } else {
+            logger.info("Użytkownik testowy ({}) już istnieje.", passengerEmail);
+        }
+
         List<RecurringFlightSchedule> savedSchedules = new ArrayList<>();
         if (scheduleRepository.count() == 0) {
             logger.info("Brak harmonogramów cyklicznych. Dodawanie danych początkowych...");
