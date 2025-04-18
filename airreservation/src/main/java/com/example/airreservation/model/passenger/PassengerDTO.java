@@ -1,12 +1,10 @@
 package com.example.airreservation.model.passenger;
 
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import org.hibernate.validator.constraints.UniqueElements;
 
 @Data
 public class PassengerDTO {
@@ -29,7 +27,7 @@ public class PassengerDTO {
     @Size(min = 8, message = "Hasło musi mieć minimum 8 znaków")
     private String password;
 
-    // Added matchingPassword field
+
     @NotBlank(message = "Potwierdzenie hasła jest wymagane")
     private String matchingPassword;
 

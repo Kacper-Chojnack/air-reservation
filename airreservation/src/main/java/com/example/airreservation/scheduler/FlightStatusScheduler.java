@@ -1,41 +1,39 @@
 package com.example.airreservation.scheduler;
 
-import com.example.airreservation.model.flight.Flight;
-import com.example.airreservation.model.reservation.Reservation;
-import com.example.airreservation.repository.FlightRepository;
-import com.example.airreservation.repository.ReservationRepository;
+import com.example.airreservation.repository.TemporarySeatLockRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Component
 public class FlightStatusScheduler {
 
-    private final FlightRepository flightRepository;
-    private final ReservationRepository reservationRepository;
+    private static final Logger logger = LoggerFactory.getLogger(FlightStatusScheduler.class);
 
-    public FlightStatusScheduler(FlightRepository flightRepository, ReservationRepository reservationRepository) {
-        this.flightRepository = flightRepository;
-        this.reservationRepository = reservationRepository;
+    private TemporarySeatLockRepository temporarySeatLockRepository;
+
+    public FlightStatusScheduler(TemporarySeatLockRepository temporarySeatLockRepository) {
+        this.temporarySeatLockRepository = temporarySeatLockRepository;
     }
 
     @Scheduled(fixedRate = 60_000)
     @Transactional
-    public void updateFlightStatuses() {
-        List<Flight> activeFlights = flightRepository.findByDepartureDateBeforeAndCompletedFalse(LocalDateTime.now());
-
-        activeFlights.forEach(flight -> {
-            List<Reservation> reservations = reservationRepository.findByFlightId(flight.getId());
-            reservations.forEach(res -> res.setDeparted(true));
-            reservationRepository.saveAll(reservations);
-
-            if (flight.isCompleted()) {
-                flight.setCompleted(true);
-                flightRepository.save(flight);
+    public void cleanupExpiredSeatLocks() {
+        LocalDateTime now = LocalDateTime.now();
+        logger.info("SCHEDULER: Uruchamianie czyszczenia blokad wygasłych przed {}", now);
+        try {
+            int deletedCount = temporarySeatLockRepository.deleteExpiredLocks(now);
+            if (deletedCount > 0) {
+                logger.info("SCHEDULER: Usunięto {} wygasłych blokad miejsc.", deletedCount);
+            } else {
+                logger.debug("SCHEDULER: Nie znaleziono wygasłych blokad miejsc do usunięcia.");
             }
-        });
+        } catch (Exception e) {
+            logger.error("SCHEDULER: Błąd podczas czyszczenia wygasłych blokad!", e);
+        }
     }
 }

@@ -34,7 +34,7 @@ public class ProfileController {
         Passenger passenger = passengerRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Nie znaleziono pasażera: " + email));
 
-        List<Reservation> allReservations = reservationRepository.findByPassengerIdOrderByFlightDepartureDateDesc(passenger.getId()); // Potrzebujesz metody w repo
+        List<Reservation> allReservations = reservationRepository.findByPassengerIdOrderByFlightDepartureDateDesc(passenger.getId());
 
         LocalDateTime now = LocalDateTime.now();
         List<Reservation> futureReservations = allReservations.stream()
