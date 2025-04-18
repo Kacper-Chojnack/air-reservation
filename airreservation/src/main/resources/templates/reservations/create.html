@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="pl" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <title>Utwórz Rezerwację</title>
@@ -7,7 +7,6 @@
 </head>
 <body>
 <div th:replace="~{shared/fragments :: header}"></div>
-<div class="container">
 
 <h1>Zarezerwuj lot</h1>
 
@@ -15,7 +14,7 @@
     <span th:text="${error}"></span>
 </div>
 
-<form th:action="@{/reservations/acquire-lock}" th:object="${reservationDTO}" method="post">
+<form th:action="@{/reservations/createReservation}" th:object="${reservationDTO}" method="post">
 
     <div th:if="${#fields.hasErrors('*')}" class="error" style="margin-bottom: 10px;">
         Proszę poprawić błędy w formularzu.
@@ -30,12 +29,11 @@
     </p>
     <p><strong>Numer lotu:</strong> <span th:text="${flightNumber}"></span></p>
 
-    <input type="hidden" th:field="*{flightId}"/>
+    <input type="hidden" th:field="*{flightId}" />
 
     <div>
         <label for="seatSelect">Miejsce:</label>
-        <select id="seatSelect" th:field="*{seatNumber}" required
-                th:classappend="${#fields.hasErrors('seatNumber')} ? 'error-border'">
+        <select id="seatSelect" th:field="*{seatNumber}" required th:classappend="${#fields.hasErrors('seatNumber')} ? 'error-border'">
             <option value="">-- Wybierz miejsce --</option>
             <option th:each="seat : ${availableSeats}" th:value="${seat}" th:text="${seat}"></option>
         </select>
@@ -44,6 +42,5 @@
 
     <button type="submit" style="margin-top: 15px;">Zarezerwuj lot</button>
 </form>
-</div>
 </body>
 </html>

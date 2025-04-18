@@ -1,8 +1,5 @@
 <!DOCTYPE html>
 <html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-<head>
-    <meta charset="UTF-8">
-</head>
 <body>
 <div th:fragment="header">
     <div style="padding: 10px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee;">
@@ -11,7 +8,6 @@
             <span style="font-size: 24px; font-weight: bold; color: black;">AirReservation</span>
         </a>
         <div>
-            <span sec:authorize="isAnonymous()">
                 <a th:href="@{/login}" class="button">Logowanie</a>
                 <a th:href="@{/passengers/create}" class="button">Rejestracja</a>
             </span>
@@ -19,7 +15,7 @@
             <span sec:authorize="isAuthenticated()">
                  Witaj, <span sec:authentication="name" style="font-weight: bold;"></span>!
                 <a th:href="@{/profile}" class="button">Mój Profil</a>
-                <a th:href="@{/admin}" class="button" sec:authorize="hasRole('ADMIN')">Panel Admina</a>
+                <!-- Formularz wylogowania -->
                 <form th:action="@{/logout}" method="post" style="display: inline;">
                     <button type="submit" class="button-link">Wyloguj</button>
                 </form>

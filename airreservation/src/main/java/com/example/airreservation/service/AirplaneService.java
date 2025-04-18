@@ -14,7 +14,7 @@ public class AirplaneService {
     private final AirplaneRepository airplaneRepository;
 
 
-    public List<Airplane> getAllAirplanes() {
+    public List<Airplane> getAllAirplanes(){
         return airplaneRepository.findAll();
     }
 

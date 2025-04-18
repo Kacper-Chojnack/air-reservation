@@ -14,6 +14,4 @@ public interface PassengerRepository extends JpaRepository<Passenger, Long> {
     boolean existsByPhoneNumber(String phoneNumber);
 
     Optional<Passenger> findByEmail(String email);
-
-    Optional<Passenger> findByConfirmationToken(String confirmationToken);
 }

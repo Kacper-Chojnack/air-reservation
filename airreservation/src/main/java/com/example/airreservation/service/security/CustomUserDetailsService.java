@@ -1,8 +1,9 @@
-package com.example.airreservation.service;
+package com.example.airreservation.service.security;
 
 import com.example.airreservation.model.passenger.Passenger;
 import com.example.airreservation.repository.PassengerRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -11,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -23,14 +25,12 @@ public class CustomUserDetailsService implements UserDetailsService {
         Passenger passenger = passengerRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Nie znaleziono użytkownika o emailu: " + email));
 
+        List<GrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(passenger.getRole()));
 
-        return User.builder()
-                .username(passenger.getEmail())
-                .password(passenger.getPassword())
-                .authorities(Collections.singletonList(new SimpleGrantedAuthority(passenger.getRole())))
-                .disabled(!passenger.isEnabled())
-
-
-                .build();
+        return new User(
+                passenger.getEmail(),
+                passenger.getPassword(),
+                authorities
+        );
     }
 }

@@ -2,48 +2,13 @@
 <html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Strona główna - Wyszukaj Lot</title>
+    <title>Strona główna</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 </head>
 <body>
 <div th:replace="~{shared/fragments :: header}"></div>
-<div class="container">
 
-<h1>Wyszukaj Loty</h1>
-
-<form class="search-form" th:action="@{/}" method="get">
-    <div>
-        <label for="departureAirportId">Skąd:</label>
-        <select id="departureAirportId" name="departureAirportId" required>
-            <option value="">-- Wybierz lotnisko --</option>
-            <option th:each="airport : ${airports}"
-                    th:value="${airport.id}"
-                    th:text="${airport.name}"
-                    th:selected="${airport.id == searchDepartureAirportId}">
-            </option>
-        </select>
-    </div>
-    <div>
-        <label for="arrivalAirportId">Dokąd:</label>
-        <select id="arrivalAirportId" name="arrivalAirportId">
-            <option value="">Gdziekolwiek</option>
-            <option th:each="airport : ${airports}"
-                    th:value="${airport.id}"
-                    th:text="${airport.name}"
-                    th:selected="${airport.id == searchArrivalAirportId}">
-            </option>
-        </select>
-    </div>
-    <div>
-        <label for="departureDate">Data wylotu:</label>
-
-        <input type="date" id="departureDate" name="departureDate" required
-               th:value="${#temporals.format(searchDepartureDate, 'yyyy-MM-dd')}">
-    </div>
-    <div>
-        <button type="submit">Szukaj</button>
-    </div>
-</form>
+<h1>Loty:</h1>
 
 <div th:if="${errorMessage}" class="flash-error">
     <p th:text="${errorMessage}"></p>
@@ -53,97 +18,42 @@
     <a th:href="@{/flights/create}" class="button" sec:authorize="hasRole('ADMIN')">Utwórz lot</a>
 </div>
 
-<div th:if="${flightPage != null and flightPage.hasContent()}">
-    <h2>Wyniki wyszukiwania:</h2>
-    <table border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
-        <thead>
-        <tr>
-            <th>Lot z</th>
-            <th>Lot do</th>
-            <th>Data wylotu</th>
-            <th>Długość lotu</th>
-            <th>Status</th>
-            <th>Akcja</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="flight : ${flightPage.content}">
-            <td th:text="${flight.departureAirport?.name}">Lotnisko wylotu</td>
-            <td th:text="${flight.arrivalAirport?.name}">Lotnisko przylotu</td>
-            <td th:text="${#temporals.format(flight.departureDate, 'yyyy-MM-dd HH:mm')}">Data wylotu</td>
-            <td th:text="${flight.flightDuration != null ? flight.flightDuration.toHours() + 'h ' + (flight.flightDuration.toMinutes() % 60) + 'min' : 'Brak danych'}">Długość lotu</td>
-            <td>
-                <span th:if="${flight.isDeparted()}">Wystartował</span>
-                <span th:unless="${flight.isDeparted()}">Czeka na wystartowanie</span>
-            </td>
-            <td>
-                <form th:action="@{/reservations/create}" method="get">
-                    <input type="hidden" name="flightId" th:value="${flight.id}"/>
-                    <button type="submit" th:disabled="${flight.isDeparted()}">
-                        <span th:if="${flight.isDeparted()}">Rezerwacja niemożliwa</span>
-                        <span th:unless="${flight.isDeparted()}">Zarezerwuj</span>
-                    </button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div class="pagination" th:if="${flightPage.totalPages > 1}">
-        <a th:if="${flightPage.hasPrevious()}"
-           th:href="@{/(page=${flightPage.number - 1}, size=${flightPage.size}, departureAirportId=${searchDepartureAirportId}, arrivalAirportId=${searchArrivalAirportId}, departureDate=${#temporals.format(searchDepartureDate, 'yyyy-MM-dd')})}">« Poprzednia</a>
-        <span class="disabled" th:unless="${flightPage.hasPrevious()}">« Poprzednia</span>
-
-        <span th:each="i : ${#numbers.sequence(0, flightPage.totalPages - 1)}">
-            <a th:if="${i != flightPage.number}"
-               th:href="@{/(page=${i}, size=${flightPage.size}, departureAirportId=${searchDepartureAirportId}, arrivalAirportId=${searchArrivalAirportId}, departureDate=${#temporals.format(searchDepartureDate, 'yyyy-MM-dd')})}"
-               th:text="${i + 1}"></a>
-            <span class="active" th:if="${i == flightPage.number}" th:text="${i + 1}"></span>
-        </span>
-
-        <a th:if="${flightPage.hasNext()}"
-           th:href="@{/(page=${flightPage.number + 1}, size=${flightPage.size}, departureAirportId=${searchDepartureAirportId}, arrivalAirportId=${searchArrivalAirportId}, departureDate=${#temporals.format(searchDepartureDate, 'yyyy-MM-dd')})}">Następna »</a>
-        <span class="disabled" th:unless="${flightPage.hasNext()}">Następna »</span>
-    </div>
-
-</div>
-<div th:if="${flightPage != null and !flightPage.hasContent()}">
-    <p>Brak lotów spełniających podane kryteria.</p>
-</div>
-<div th:if="${flightPage == null}">
-    <p>Wprowadź kryteria wyszukiwania, aby zobaczyć dostępne loty.</p>
+<div th:if="${#lists.isEmpty(flights)}">
+    <p>Brak dostępnych lotów.</p>
 </div>
 
-<div th:if="${not #lists.isEmpty(upcomingFlights)}">
-    <h2>Nadchodzące Loty:</h2>
-    <table border="1" cellpadding="5" cellspacing="0" style="width:100%; border-collapse: collapse; margin-bottom: 30px;">
-        <thead>
-        <tr>
-            <th>Lot z</th>
-            <th>Lot do</th>
-            <th>Data wylotu</th>
-            <th>Akcja</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="flight : ${upcomingFlights}">
-            <td th:text="${flight.departureAirport?.name}"></td>
-            <td th:text="${flight.arrivalAirport?.name}"></td>
-            <td th:text="${#temporals.format(flight.departureDate, 'yyyy-MM-dd HH:mm')}"></td>
-            <td>
-
-                <form th:action="@{/reservations/create}" method="get">
-                    <input type="hidden" name="flightId" th:value="${flight.id}"/>
-                    <button type="submit" th:disabled="${flight.isDeparted()}">Zarezerwuj</button>
-                </form>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
-<div th:if="${upcomingFlightsError}" class="flash-error">
-    <p th:text="${upcomingFlightsError}"></p>
-</div>
-</div>
+<table th:unless="${#lists.isEmpty(flights)}" border="1" cellpadding="10" cellspacing="0" style="width:100%; border-collapse: collapse;">
+    <thead>
+    <tr>
+        <th>Lot z</th>
+        <th>Lot do</th>
+        <th>Data wylotu</th>
+        <th>Długość lotu</th>
+        <th>Status</th>
+        <th>Akcja</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="flight : ${flights}">
+        <td th:text="${flight.departureAirport?.name}">Lotnisko wylotu</td>
+        <td th:text="${flight.arrivalAirport?.name}">Lotnisko przylotu</td>
+        <td th:text="${#temporals.format(flight.departureDate, 'yyyy-MM-dd HH:mm')}">Data wylotu</td>
+        <td th:text="${flight.flightDuration != null ? flight.flightDuration.toHours() + 'h ' + (flight.flightDuration.toMinutes() % 60) + 'min' : 'Brak danych'}">Długość lotu</td>
+        <td>
+            <span th:if="${flight.isDeparted()}">Wystartował</span>
+            <span th:unless="${flight.isDeparted()}">Czeka na wystartowanie</span>
+        </td>
+        <td>
+            <form th:action="@{/reservations/create}" method="get">
+                <input type="hidden" name="flightId" th:value="${flight.id}"/>
+                <button type="submit" th:disabled="${flight.isDeparted()}">
+                    <span th:if="${flight.isDeparted()}">Rezerwacja niemożliwa</span>
+                    <span th:unless="${flight.isDeparted()}">Zarezerwuj</span>
+                </button>
+            </form>
+        </td>
+    </tr>
+    </tbody>
+</table>
 </body>
 </html>

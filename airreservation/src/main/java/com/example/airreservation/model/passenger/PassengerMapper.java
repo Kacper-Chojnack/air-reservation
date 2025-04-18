@@ -12,7 +12,4 @@ public interface PassengerMapper {
 
     PassengerDTO PassengerToPassengerDTO(Passenger passenger);
 
-    @Mapping(target = "newPassword", ignore = true)
-    PassengerAdminEditDTO passengerToAdminEditDTO(Passenger passenger);
-
 }

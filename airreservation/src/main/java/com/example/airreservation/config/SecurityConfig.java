@@ -1,13 +1,12 @@
 package com.example.airreservation.config;
 
-import com.example.airreservation.service.CustomUserDetailsService;
+import com.example.airreservation.service.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,14 +24,14 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(Customizer.withDefaults())
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"))
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/", "/login", "/passengers/create", "/error", "/confirm").permitAll()
+                        .requestMatchers("/", "/login", "/passengers/create", "/error").permitAll()
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/favicon.ico").permitAll()
+                        .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/passengers/create").permitAll()
                         .requestMatchers(HttpMethod.POST, "/passengers").permitAll()
                         .requestMatchers("/flights/create").hasRole("ADMIN")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/flights").hasRole("ADMIN")
                         .requestMatchers("/reservations/**", "/profile/**").authenticated()
                         .anyRequest().authenticated()
@@ -45,7 +44,8 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
-                );
+                )
+                .headers(headers -> headers.frameOptions(fo -> fo.sameOrigin()));
 
         return http.build();
     }

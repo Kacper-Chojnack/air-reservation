@@ -10,8 +10,6 @@ import java.time.LocalDateTime;
 @Data
 public class FlightDTO {
 
-    private Long id;
-
     @NotNull(message = "Miejsce wylotu nie może być puste.")
     private Long departureAirportId;
     @NotNull(message = "Miejsce przylotu nie może być puste.")
@@ -19,7 +17,7 @@ public class FlightDTO {
     @NotBlank(message = "Numer lotu nie może być pusty.")
     private String flightNumber;
     @NotNull(message = "Wybór lotu powrotnego nie może być pusty.")
-    private boolean roundTrip;
+    private boolean isRoundTrip;
 
     @NotNull(message = "Samolot musi zostać wybrany.")
     private Long airplane;

@@ -1,13 +1,10 @@
 package com.example.airreservation.model.flight;
 
+import com.example.airreservation.model.reservation.Reservation;
 import com.example.airreservation.model.airplane.Airplane;
 import com.example.airreservation.model.airport.Airport;
-import com.example.airreservation.model.reservation.Reservation;
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.Duration;
 import java.time.LocalDateTime;

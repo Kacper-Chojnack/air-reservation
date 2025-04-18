@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="pl" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">    <title>Utwórz lot</title>
+    <meta charset="UTF-8">
+    <title>Utwórz lot</title>
     <link rel="stylesheet" type="text/css" th:href="@{/css/style.css}">
 </head>
 <body>
 <div th:replace="~{shared/fragments :: header}"></div>
-<div class="container">
 
 <h1>Utwórz nowy lot</h1>
 <form th:action="@{/flights}" th:object="${flightDTO}" method="post">
@@ -114,6 +114,6 @@
     <button type="submit">Utwórz lot</button>
 
 </form>
-</div>
+
 </body>
 </html>

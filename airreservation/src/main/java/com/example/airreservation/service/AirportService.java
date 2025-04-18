@@ -14,7 +14,7 @@ public class AirportService {
     private final AirportRepository airportRepository;
 
 
-    public List<Airport> getAllAirports() {
+    public List<Airport> getAllAirports(){
         return airportRepository.findAll();
     }
 

@@ -21,14 +21,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long> 
 
     List<Reservation> findByPassengerIdOrderByFlightDepartureDateDesc(Long passengerId);
 
-    boolean existsByFlightId(Long flightId);
 
-    boolean existsByPassengerId(Long passengerId);
-
-    @Query("SELECT COUNT(r) > 0 FROM Reservation r WHERE r.flight.id = :flightId AND r.seatNumber = :seat AND r.id <> :reservationId")
-    boolean existsByFlightIdAndSeatNumberAndNotId(
-            @Param("flightId") Long flightId,
-            @Param("seat") Integer seat,
-            @Param("reservationId") Long reservationId
-    );
 }

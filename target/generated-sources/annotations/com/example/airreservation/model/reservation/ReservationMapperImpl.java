@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2025-04-14T22:56:54+0200",
+    date = "2025-04-14T16:00:25+0200",
     comments = "version: 1.6.3, compiler: javac, environment: Java 21.0.6 (Amazon.com Inc.)"
 )
 @Component
@@ -45,23 +45,6 @@ public class ReservationMapperImpl implements ReservationMapper {
         reservationDTO.setSeatNumber( reservation.getSeatNumber() );
 
         return reservationDTO;
-    }
-
-    @Override
-    public ReservationAdminEditDTO reservationToAdminEditDTO(Reservation reservation) {
-        if ( reservation == null ) {
-            return null;
-        }
-
-        ReservationAdminEditDTO reservationAdminEditDTO = new ReservationAdminEditDTO();
-
-        reservationAdminEditDTO.setFlightInfo( flightToInfoString( reservation ) );
-        reservationAdminEditDTO.setId( reservation.getId() );
-        reservationAdminEditDTO.setSeatNumber( reservation.getSeatNumber() );
-
-        reservationAdminEditDTO.setPassengerFullName( reservation.getPassenger() != null ? reservation.getPassenger().getName() + " " + reservation.getPassenger().getSurname() : "Brak danych pasażera" );
-
-        return reservationAdminEditDTO;
     }
 
     private Long reservationPassengerId(Reservation reservation) {

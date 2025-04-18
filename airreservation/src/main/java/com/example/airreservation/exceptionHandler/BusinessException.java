@@ -1,7 +1,8 @@
 package com.example.airreservation.exceptionHandler;
 
-import lombok.Getter;
 import org.springframework.http.HttpStatus;
+
+import lombok.Getter;
 
 @Getter
 public class BusinessException extends RuntimeException {
